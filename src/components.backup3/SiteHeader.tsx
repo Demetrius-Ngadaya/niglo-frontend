@@ -19,14 +19,14 @@ export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-ink/95 backdrop-blur border-b border-stone/10 text-stone">
+    <header className="sticky top-0 z-40 bg-stone/90 dark:bg-ink/90 backdrop-blur border-b border-ink/10 dark:border-stone/10">
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0" onClick={() => setMenuOpen(false)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo.png"
             alt="NIGLOY COMPANY"
-            className="h-10 w-10 rounded-full object-cover border border-stone/20"
+            className="h-10 w-10 rounded-full object-cover border border-ink/10 dark:border-stone/20"
           />
           <span className="font-display text-2xl tracking-tight">
             NIGLOY<span className="text-brass">.</span>
@@ -59,20 +59,20 @@ export default function SiteHeader() {
 
       {/* Mobile menu panel */}
       {menuOpen && (
-        <div className="md:hidden border-t border-stone/10 bg-ink text-stone">
+        <div className="md:hidden border-t border-ink/10 dark:border-stone/10 bg-stone dark:bg-ink">
           <nav className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="py-3 text-sm font-medium border-b border-stone/10 hover:text-brass transition-colors"
+                className="py-3 text-sm font-medium border-b border-ink/5 dark:border-stone/5 hover:text-brass transition-colors"
               >
                 {item.label}
               </Link>
             ))}
             <div className="flex items-center justify-between pt-4">
-              <span className="text-sm text-stone/60">Theme</span>
+              <span className="text-sm text-ink/60 dark:text-stone/60">Theme</span>
               <ThemeToggle />
             </div>
             <Link

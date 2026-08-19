@@ -1,12 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { api, imageUrl, PortfolioProject, TeamMember, ServiceCategory } from '@/lib/api';
-import ServicesGrid from './services/ServicesGrid';
-import RentalsGrid from './rentals/RentalsGrid';
-import TeamSection from './TeamSection';
-
-type RentalItem = { id: number; name: string; slug: string; description?: string | null; image_path?: string | null; price_per_day?: string | null };
-type RentalCategory = { id: number; name: string; items: RentalItem[] };
+import { api, imageUrl, ServiceCategory, PortfolioProject } from '@/lib/api';
 
 async function getCategories(): Promise<ServiceCategory[]> {
   try {
@@ -26,31 +20,8 @@ async function getFeaturedProjects(): Promise<PortfolioProject[]> {
   }
 }
 
-async function getTeam(): Promise<TeamMember[]> {
-  try {
-    const { data } = await api.get('/team');
-    return data;
-  } catch {
-    return [];
-  }
-}
-
-async function getRentalCategories(): Promise<RentalCategory[]> {
-  try {
-    const { data } = await api.get('/rental-equipment-categories');
-    return data;
-  } catch {
-    return [];
-  }
-}
-
 export default async function HomePage() {
-  const [categories, projects, team, rentalCategories] = await Promise.all([
-    getCategories(),
-    getFeaturedProjects(),
-    getTeam(),
-    getRentalCategories(),
-  ]);
+  const [categories, projects] = await Promise.all([getCategories(), getFeaturedProjects()]);
 
   return (
     <>
@@ -75,54 +46,28 @@ export default async function HomePage() {
 
       <div className="seam max-w-6xl mx-auto" />
 
-      {/* What are you looking for today — reuses the same category/service cards from /services */}
+      {/* What are you looking for today */}
       <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
-          <div>
-            <div className="eyebrow mb-3">Where do we start</div>
-            <h2 className="font-display text-3xl md:text-4xl">What are you looking for today?</h2>
-          </div>
-          <Link href="/services" className="text-sm font-medium hover:text-brass whitespace-nowrap">
-            View all services &rarr;
-          </Link>
-        </div>
+        <div className="eyebrow mb-3">Where do we start</div>
+        <h2 className="font-display text-3xl md:text-4xl mb-10">What are you looking for today?</h2>
 
-        {categories.length > 0 ? (
-          <ServicesGrid categories={categories} />
-        ) : (
-          <p className="text-ink/50 dark:text-stone/60">
-            No services found — make sure the backend is running and seeded.
-          </p>
-        )}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(categories.length ? categories : PLACEHOLDER_CATEGORIES).map((cat, i) => (
+            <Link
+              key={cat.slug ?? i}
+              href={`/services#${cat.slug ?? ''}`}
+              className="group relative border border-ink/10 dark:border-stone/10 bg-white/40 dark:bg-white/5 hover:border-brass p-6 flex flex-col justify-between min-h-[160px] transition-colors"
+            >
+              <span className="text-xs text-concrete font-mono">{String(i + 1).padStart(2, '0')}</span>
+              <span className="font-display text-xl mt-6 group-hover:text-brass transition-colors">
+                {cat.name}
+              </span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <div className="seam max-w-6xl mx-auto" />
-
-      {/* Rentals — reuses the exact same grid, zoom and "Add to Request" cart from /rentals */}
-      {rentalCategories.length > 0 && (
-        <>
-          <section className="max-w-6xl mx-auto px-6 py-20">
-            <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
-              <div>
-                <div className="eyebrow mb-3">Equipment for hire</div>
-                <h2 className="font-display text-3xl md:text-4xl">Rentals</h2>
-              </div>
-              <Link href="/rentals" className="text-sm font-medium hover:text-brass whitespace-nowrap">
-                View all rentals &rarr;
-              </Link>
-            </div>
-
-            <RentalsGrid categories={rentalCategories} />
-          </section>
-
-          <div className="seam max-w-6xl mx-auto" />
-        </>
-      )}
-
-      {/* Team */}
-      <TeamSection members={team} />
-
-      {team.length > 0 && <div className="seam max-w-6xl mx-auto" />}
 
       {/* Featured portfolio */}
       {projects.length > 0 && (
@@ -176,3 +121,12 @@ export default async function HomePage() {
     </>
   );
 }
+
+const PLACEHOLDER_CATEGORIES = [
+  { slug: '', name: 'Interior Design & Finishing' },
+  { slug: '', name: 'Plumbing Services' },
+  { slug: '', name: 'Photography & Video Production' },
+  { slug: '', name: 'Catering Services' },
+  { slug: '', name: 'Delivery & Distribution' },
+  { slug: '', name: 'Equipment Rental' },
+];

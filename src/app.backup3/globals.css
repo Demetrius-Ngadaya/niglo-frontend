@@ -11,7 +11,7 @@
 }
 
 body {
-  @apply bg-gray-100 text-ink dark:bg-gray-900 dark:text-stone transition-colors duration-200;
+  @apply bg-stone text-ink dark:bg-ink dark:text-stone transition-colors duration-200;
 }
 
 .eyebrow {
