@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+:root {
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #EDE8DF;
+  color: #181410;
+}
+
+.eyebrow {
+  @apply text-xs tracking-[0.2em] uppercase text-brass font-semibold;
+}
+
+.seam {
+  height: 1px;
+  background: repeating-linear-gradient(90deg, #B8863B 0 10px, transparent 10px 18px);
+}
+
+.btn-primary {
+  @apply inline-flex items-center gap-2 bg-ink text-stone px-6 py-3 font-medium tracking-wide hover:bg-brass hover:text-ink transition-colors;
+}
+
+.btn-outline {
+  @apply inline-flex items-center gap-2 border border-ink/20 text-ink px-6 py-3 font-medium tracking-wide hover:border-brass hover:text-brass transition-colors;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #B8863B;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
