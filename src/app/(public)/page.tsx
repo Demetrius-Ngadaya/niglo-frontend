@@ -4,9 +4,11 @@ import { api, imageUrl, PortfolioProject, TeamMember, ServiceCategory } from '@/
 import ServicesGrid from './services/ServicesGrid';
 import RentalsGrid from './rentals/RentalsGrid';
 import TeamSection from './TeamSection';
+import HomeHeroSlider from './HomeHeroSlider';
 
 type RentalItem = { id: number; name: string; slug: string; description?: string | null; image_path?: string | null; price_per_day?: string | null };
 type RentalCategory = { id: number; name: string; items: RentalItem[] };
+type HeroSlide = { id: number; title: string; slug: string; image_path: string; description?: string | null };
 
 async function getCategories(): Promise<ServiceCategory[]> {
   try {
@@ -44,30 +46,40 @@ async function getRentalCategories(): Promise<RentalCategory[]> {
   }
 }
 
+async function getHeroSlides(): Promise<HeroSlide[]> {
+  try {
+    const { data } = await api.get('/hero-slides');
+    return data;
+  } catch {
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const [categories, projects, team, rentalCategories] = await Promise.all([
+  const [categories, projects, team, rentalCategories, heroSlides] = await Promise.all([
     getCategories(),
     getFeaturedProjects(),
     getTeam(),
     getRentalCategories(),
+    getHeroSlides(),
   ]);
 
   return (
     <>
-      {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-16">
-        <div className="eyebrow mb-5">Interior &middot; Plumbing &middot; Events &middot; Rentals &middot; Delivery</div>
-        <h1 className="font-display text-5xl md:text-7xl leading-[0.98] max-w-3xl">
-          We design. We build.
-          <br />
-          We create. <span className="text-brass">We deliver.</span>
+      <HomeHeroSlider slides={heroSlides} />
+
+      {/* Hero text */}
+      <section className="max-w-6xl mx-auto px-6 pt-14 pb-14">
+        <div className="eyebrow mb-4">Interior &middot; Plumbing &middot; Events &middot; Rentals &middot; Delivery</div>
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl leading-tight max-w-2xl">
+          We design. We build. We create. <span className="text-brass">We deliver.</span>
         </h1>
-        <p className="mt-8 max-w-xl text-lg text-ink/70 dark:text-stone/70">
+        <p className="mt-6 max-w-xl text-base sm:text-lg text-ink/70 dark:text-stone/70">
           NIGLOY is a complete solution — one team for interior finishing, plumbing,
           event production, catering, rentals and delivery. Tell us what you&apos;re
           planning and we&apos;ll handle it end to end.
         </p>
-        <div className="mt-10 flex flex-wrap gap-4">
+        <div className="mt-8 flex flex-wrap gap-4">
           <Link href="/start-a-project" className="btn-primary">Start Your Project</Link>
           <Link href="/services" className="btn-outline">Explore Services</Link>
         </div>

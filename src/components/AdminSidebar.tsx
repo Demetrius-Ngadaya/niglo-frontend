@@ -23,6 +23,7 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
   {
     label: 'Content',
     links: [
+      { href: '/admin/hero-slides', label: 'Hero Slides' },
       { href: '/admin/services', label: 'Services' },
       { href: '/admin/service-sliders', label: 'Service Sliders' },
       { href: '/admin/portfolio', label: 'Portfolio' },
