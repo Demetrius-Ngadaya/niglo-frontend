@@ -6,28 +6,34 @@ import { imageUrl } from '@/lib/api';
 
 type Slide = { id: number; title: string; slug: string; image_path: string; description?: string | null };
 
-// A slow, subtle fade — deliberately not a left/right slide, and deliberately
-// NOT a fixed-size box. This shows exactly one image at a time, sized by its
-// own natural proportions (never cropped, never letterboxed). Sizing is set
-// via inline style (not Tailwind classes) specifically so it can never be
-// silently overridden by a stale CSS bundle — inline styles always win and
-// don't depend on any build step re-running correctly.
-const HOLD_MS = 6000;
-const FADE_MS = 900;
+// A slow, gentle dim-and-brighten — deliberately not a left/right slide, and
+// deliberately NOT a fixed-size box (that combination is what caused the
+// earlier cropping/gutter bug). Sized purely by the image's own natural
+// proportions via width:100%/height:auto — never cropped, never letterboxed.
+//
+// The transition never fully hides the image (it dips to a low opacity
+// rather than 0) and runs slowly, so swapping to the next slide reads as a
+// soft breathing motion rather than a visible "blink" — this matters more
+// now that the image fills the full page width instead of a small confined
+// box, since the same transition is far more noticeable across a larger
+// visual area.
+const HOLD_MS = 7000;
+const FADE_MS = 1800;
+const DIM_OPACITY = 0.25;
 
 export default function HomeHeroSlider({ slides }: { slides: Slide[] }) {
   const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
+  const [dimmed, setDimmed] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (slides.length <= 1) return;
 
     function cycle() {
-      setVisible(false);
+      setDimmed(true);
       timeoutRef.current = setTimeout(() => {
         setIndex((i) => (i + 1) % slides.length);
-        setVisible(true);
+        setDimmed(false);
         timeoutRef.current = setTimeout(cycle, HOLD_MS);
       }, FADE_MS);
     }
@@ -54,16 +60,16 @@ export default function HomeHeroSlider({ slides }: { slides: Slide[] }) {
           display: 'block',
           width: '100%',
           height: 'auto',
-          // No maxHeight here on purpose — that was the actual bug. A cap tied to
-          // viewport height meant almost any normal landscape photo needed more
-          // height than 75% of a typical screen to display at full width without
-          // distortion, so the browser was shrinking the whole image down (width
-          // included) to obey the cap — which is exactly the narrow, gutter-heavy
-          // look that kept showing up. Letting height be fully natural is the only
-          // way to guarantee every image, tall or wide, shows completely undistorted.
+          // No maxHeight here on purpose — a cap tied to viewport height meant
+          // almost any normal landscape photo needed more height than the cap
+          // allowed to display at full width without distortion, so the browser
+          // was shrinking the whole image down (width included) to obey it —
+          // exactly the narrow, gutter-heavy look that kept showing up. Letting
+          // height be fully natural is the only way to guarantee every image,
+          // tall or wide, shows completely undistorted.
           objectFit: 'contain',
           margin: '0 auto',
-          opacity: visible ? 1 : 0,
+          opacity: dimmed ? DIM_OPACITY : 1,
           transition: `opacity ${FADE_MS}ms ease-in-out`,
         }}
       />
@@ -79,7 +85,7 @@ export default function HomeHeroSlider({ slides }: { slides: Slide[] }) {
           paddingBottom: '1.5rem',
           paddingLeft: '1.5rem',
           paddingRight: '1.5rem',
-          opacity: visible ? 1 : 0,
+          opacity: dimmed ? DIM_OPACITY : 1,
           transition: `opacity ${FADE_MS}ms ease-in-out`,
         }}
       >
