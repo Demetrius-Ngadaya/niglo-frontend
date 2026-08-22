@@ -1,5 +1,7 @@
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
+import VisitorTracker from '@/components/VisitorTracker';
+import ChatWidget from '@/components/ChatWidget';
 
 // Every public page fetches its content from the Laravel API at request time
 // (categories, projects, team, etc — all admin-managed and constantly
@@ -12,9 +14,11 @@ export const dynamic = 'force-dynamic';
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <VisitorTracker />
       <SiteHeader />
       <main>{children}</main>
       <SiteFooter />
+      <ChatWidget />
     </>
   );
 }

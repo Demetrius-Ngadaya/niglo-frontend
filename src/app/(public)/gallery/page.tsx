@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import { api, imageUrl } from '@/lib/api';
 
 type Album = { id: number; title: string; slug: string; cover_image_path?: string | null; images_count?: number };
@@ -22,17 +24,20 @@ export default async function GalleryPage() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {albums.map((album) => (
-          <div key={album.slug} className="block">
+          <Link key={album.slug} href={`/gallery/${album.slug}`} className="group block">
             <div className="relative aspect-square bg-stoneDark dark:bg-white/5 mb-3 overflow-hidden">
               {album.cover_image_path && (
-                <Image src={imageUrl(album.cover_image_path)!} alt={album.title} fill className="object-cover" />
+                <Image src={imageUrl(album.cover_image_path)!} alt={album.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
               )}
             </div>
-            <div className="font-display text-lg">{album.title}</div>
+            <div className="font-display text-lg group-hover:text-brass transition-colors">{album.title}</div>
             {typeof album.images_count === 'number' && (
-              <div className="text-sm text-ink/50 dark:text-stone/60">{album.images_count} photos</div>
+              <div className="text-sm text-brass font-medium group-hover:underline flex items-center gap-1">
+                View All {album.images_count} Photo{album.images_count === 1 ? '' : 's'}
+                <ChevronRight size={14} />
+              </div>
             )}
-          </div>
+          </Link>
         ))}
         {albums.length === 0 && <p className="text-ink/50 dark:text-stone/60">No albums published yet.</p>}
       </div>

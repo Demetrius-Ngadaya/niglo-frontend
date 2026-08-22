@@ -18,6 +18,7 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
       { href: '/admin/quotation-requests', label: 'Quotation Requests' },
       { href: '/admin/rental-requests', label: 'Rental Requests' },
       { href: '/admin/contact-messages', label: 'Contact Messages' },
+      { href: '/admin/chatbot', label: 'Chatbot Conversations' },
     ],
   },
   {
@@ -29,10 +30,16 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
       { href: '/admin/portfolio', label: 'Portfolio' },
       { href: '/admin/rentals', label: 'Rental Equipment' },
       { href: '/admin/gallery', label: 'Gallery' },
+      { href: '/admin/videos', label: 'Videos' },
       { href: '/admin/team', label: 'Team' },
       { href: '/admin/blog', label: 'Blog' },
       { href: '/admin/testimonials', label: 'Testimonials' },
+      { href: '/admin/faqs', label: 'FAQs' },
     ],
+  },
+  {
+    label: 'Insights',
+    links: [{ href: '/admin/visitors', label: 'Visitors' }],
   },
 ];
 
