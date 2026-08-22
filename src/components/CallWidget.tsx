@@ -15,6 +15,7 @@ type Contact = { phone_display: string | null; phone_url: string | null; whatsap
 export default function CallWidget() {
   const [contact, setContact] = useState<Contact | null>(null);
   const [open, setOpen] = useState(false);
+  const [hiddenByOther, setHiddenByOther] = useState(false);
 
   useEffect(() => {
     fetch(`${API_URL}/company-contact`)
@@ -25,10 +26,28 @@ export default function CallWidget() {
       });
   }, []);
 
-  if (!contact?.phone_url) return null;
+  useEffect(() => {
+    // Same coordination as ChatWidget — hide this widget's launcher while
+    // the chat widget is open, so the two never fight for space on a small
+    // phone screen.
+    function onOtherWidget(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.widget === 'chat') setHiddenByOther(detail.open);
+    }
+    window.addEventListener('niglo-widget-toggle', onOtherWidget);
+    return () => window.removeEventListener('niglo-widget-toggle', onOtherWidget);
+  }, []);
+
+  function toggleOpen() {
+    const next = !open;
+    setOpen(next);
+    window.dispatchEvent(new CustomEvent('niglo-widget-toggle', { detail: { widget: 'call', open: next } }));
+  }
+
+  if (!contact?.phone_url || hiddenByOther) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-40">
+    <div className={`fixed bottom-24 right-6 ${open ? 'z-50' : 'z-40'}`}>
       <AnimatePresence>
         {open && (
           <motion.div
@@ -40,7 +59,7 @@ export default function CallWidget() {
           >
             <div className="bg-ink text-stone px-4 py-3 flex items-center justify-between">
               <div className="font-display text-sm">Get in Touch</div>
-              <button onClick={() => setOpen(false)} aria-label="Close">
+              <button onClick={toggleOpen} aria-label="Close">
                 <X size={16} />
               </button>
             </div>
@@ -79,7 +98,7 @@ export default function CallWidget() {
       </AnimatePresence>
 
       <motion.button
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
         className="w-14 h-14 rounded-full bg-brass text-ink hover:bg-ink hover:text-stone transition-colors flex items-center justify-center shadow-xl"

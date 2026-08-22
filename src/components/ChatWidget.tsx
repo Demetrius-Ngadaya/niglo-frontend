@@ -22,12 +22,26 @@ function getOrCreateUuid(): string {
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [hiddenByOther, setHiddenByOther] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const uuidRef = useRef<string>('');
+
+  useEffect(() => {
+    // Lets the Call Us widget know when this one opens/closes, and hides
+    // this widget's own launcher while the other one is open — on a small
+    // phone screen there isn't room for two floating buttons plus an open
+    // panel without them fighting for the same space.
+    function onOtherWidget(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.widget === 'call') setHiddenByOther(detail.open);
+    }
+    window.addEventListener('niglo-widget-toggle', onOtherWidget);
+    return () => window.removeEventListener('niglo-widget-toggle', onOtherWidget);
+  }, []);
 
   useEffect(() => {
     uuidRef.current = getOrCreateUuid();
@@ -102,12 +116,16 @@ export default function ChatWidget() {
   }
 
   function toggleOpen() {
-    setOpen((o) => !o);
+    const next = !open;
+    setOpen(next);
     setHasUnread(false);
+    window.dispatchEvent(new CustomEvent('niglo-widget-toggle', { detail: { widget: 'chat', open: next } }));
   }
 
+  if (hiddenByOther) return null;
+
   return (
-    <div className="fixed bottom-6 right-6 z-40">
+    <div className={`fixed bottom-6 right-6 ${open ? 'z-50' : 'z-40'}`}>
       <AnimatePresence>
         {open && (
           <motion.div
