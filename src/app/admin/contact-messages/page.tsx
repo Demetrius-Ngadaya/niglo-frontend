@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch, adminToken } from '@/lib/api';
+import { AdminBlockListSkeleton } from '@/components/AdminSkeleton';
 
 type Message = {
   id: number;
@@ -83,7 +84,7 @@ export default function AdminContactMessagesPage() {
         </div>
 
         {error && <p className="text-red-700 text-sm mb-6">{error}</p>}
-        {loading && <p className="text-ink/50 dark:text-stone/60 text-sm">Loading…</p>}
+        {loading && <AdminBlockListSkeleton />}
 
         <div className="space-y-2">
           {items.map((m) => (

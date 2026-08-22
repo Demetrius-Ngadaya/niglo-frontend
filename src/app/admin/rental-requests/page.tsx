@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { adminFetch, adminToken } from '@/lib/api';
+import { AdminBlockListSkeleton } from '@/components/AdminSkeleton';
 
 type RentalItem = { id: number; name: string; quantity: number };
 
@@ -129,7 +130,7 @@ function RentalRequestsContent() {
         </div>
 
         {error && <p className="text-red-700 text-sm mb-6">{error}</p>}
-        {loading && <p className="text-ink/50 dark:text-stone/60 text-sm">Loading…</p>}
+        {loading && <AdminBlockListSkeleton />}
 
         {!loading && items.length === 0 && (
           <p className="text-ink/50 dark:text-stone/60 text-sm">No equipment requests found.</p>

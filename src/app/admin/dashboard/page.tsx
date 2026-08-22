@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { adminFetch, adminToken } from '@/lib/api';
+import { AdminStatsSkeleton } from '@/components/AdminSkeleton';
 
 type Stats = {
   services: number;
@@ -51,6 +52,8 @@ export default function AdminDashboardPage() {
         <h1 className="font-display text-3xl mb-12">Dashboard</h1>
 
         {error && <p className="text-red-700 text-sm mb-6">{error}</p>}
+
+        {!stats && !error && <AdminStatsSkeleton count={9} />}
 
         {stats && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

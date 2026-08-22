@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch, adminToken } from '@/lib/api';
+import { AdminStatsSkeleton } from '@/components/AdminSkeleton';
 
 type Stats = {
   today: number;
@@ -37,6 +38,8 @@ export default function AdminVisitorsPage() {
       </p>
 
       {error && <p className="text-red-700 dark:text-red-400 text-sm mb-6">{error}</p>}
+
+      {!stats && !error && <AdminStatsSkeleton count={4} />}
 
       {stats && (
         <>

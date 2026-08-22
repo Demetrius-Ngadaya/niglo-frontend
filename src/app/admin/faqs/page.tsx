@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch, adminToken } from '@/lib/api';
+import { AdminBlockListSkeleton } from '@/components/AdminSkeleton';
 
 type Faq = { id: number; question: string; answer: string; display_order: number; is_active: boolean };
 
@@ -91,7 +92,7 @@ export default function AdminFaqsPage() {
       </div>
 
       {error && <p className="text-red-700 dark:text-red-400 text-sm mb-6">{error}</p>}
-      {loading && <p className="text-ink/50 dark:text-stone/50 text-sm">Loading…</p>}
+      {loading && <AdminBlockListSkeleton />}
 
       {adding && (
         <div className="border border-brass/30 bg-brass/5 p-5 mb-8">

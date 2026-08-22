@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
@@ -60,33 +61,41 @@ export default function SiteHeader() {
       </div>
 
       {/* Mobile menu panel */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-stone/10 bg-ink text-stone">
-          <nav className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
-            {NAV.map((item) => (
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="md:hidden border-t border-stone/10 bg-ink text-stone overflow-hidden"
+          >
+            <nav className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
+              {NAV.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="py-3 text-sm font-medium border-b border-stone/10 hover:text-brass transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="flex items-center justify-between pt-4">
+                <span className="text-sm text-stone/60">Theme</span>
+                <ThemeToggle />
+              </div>
               <Link
-                key={item.href}
-                href={item.href}
+                href="/start-a-project"
                 onClick={() => setMenuOpen(false)}
-                className="py-3 text-sm font-medium border-b border-stone/10 hover:text-brass transition-colors"
+                className="btn-primary text-sm justify-center mt-4"
               >
-                {item.label}
+                Start a Project
               </Link>
-            ))}
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-sm text-stone/60">Theme</span>
-              <ThemeToggle />
-            </div>
-            <Link
-              href="/start-a-project"
-              onClick={() => setMenuOpen(false)}
-              className="btn-primary text-sm justify-center mt-4"
-            >
-              Start a Project
-            </Link>
-          </nav>
-        </div>
-      )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

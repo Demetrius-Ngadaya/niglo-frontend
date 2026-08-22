@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch, adminToken, imageUrl } from '@/lib/api';
+import { AdminListSkeleton } from '@/components/AdminSkeleton';
 
 type Equipment = {
   id: number;
@@ -162,7 +163,7 @@ export default function AdminRentalsPage() {
         </div>
 
         {error && <p className="text-red-700 text-sm mb-6">{error}</p>}
-        {loading && <p className="text-ink/50 dark:text-stone/60 text-sm">Loading…</p>}
+        {loading && <AdminListSkeleton />}
 
         {adding && (
           <div className="border border-brass/30 bg-brass/5 p-5 mb-8">

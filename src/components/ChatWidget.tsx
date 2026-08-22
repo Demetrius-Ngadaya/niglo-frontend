@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { API_URL } from '@/lib/api';
 
@@ -107,8 +108,15 @@ export default function ChatWidget() {
 
   return (
     <div className="fixed bottom-6 right-6 z-40">
-      {open && (
-        <div className="mb-3 w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-stone dark:bg-ink border border-ink/10 dark:border-stone/10 shadow-2xl flex flex-col">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="mb-3 w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-stone dark:bg-ink border border-ink/10 dark:border-stone/10 shadow-2xl flex flex-col"
+          >
           <div className="bg-ink text-stone px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="font-display text-sm">NIGLOY Assistant</div>
             <button onClick={toggleOpen} aria-label="Close chat">
@@ -157,19 +165,26 @@ export default function ChatWidget() {
               <Send size={16} />
             </button>
           </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <button
+      <motion.button
         onClick={toggleOpen}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
         className="relative w-14 h-14 rounded-full bg-ink text-stone hover:bg-brass hover:text-ink transition-colors flex items-center justify-center shadow-xl"
         aria-label={open ? 'Close chat' : 'Open chat'}
       >
         {open ? <X size={22} /> : <MessageCircle size={22} />}
         {hasUnread && !open && (
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-brass border-2 border-stone dark:border-ink" />
+          <motion.span
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-brass border-2 border-stone dark:border-ink"
+          />
         )}
-      </button>
+      </motion.button>
     </div>
   );
 }

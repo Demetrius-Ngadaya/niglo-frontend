@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { adminFetch, adminToken } from '@/lib/api';
+import { AdminBlockListSkeleton } from '@/components/AdminSkeleton';
 
 type Message = { id?: number; sender: 'visitor' | 'bot' | 'admin'; message: string; created_at?: string };
 
@@ -129,7 +130,7 @@ function ChatbotContent() {
       </div>
 
       {error && <p className="text-red-700 dark:text-red-400 text-sm mb-6">{error}</p>}
-      {loading && <p className="text-ink/50 dark:text-stone/50 text-sm">Loading…</p>}
+      {loading && <AdminBlockListSkeleton />}
       {!loading && items.length === 0 && <p className="text-ink/50 dark:text-stone/50 text-sm">No conversations found.</p>}
 
       <div className="space-y-3">

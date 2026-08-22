@@ -2,6 +2,7 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import VisitorTracker from '@/components/VisitorTracker';
 import ChatWidget from '@/components/ChatWidget';
+import CallWidget from '@/components/CallWidget';
 
 // Every public page fetches its content from the Laravel API at request time
 // (categories, projects, team, etc — all admin-managed and constantly
@@ -19,6 +20,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <main>{children}</main>
       <SiteFooter />
       <ChatWidget />
+      <CallWidget />
     </>
   );
 }

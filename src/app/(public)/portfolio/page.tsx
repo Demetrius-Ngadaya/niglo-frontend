@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { api, imageUrl, PortfolioProject } from '@/lib/api';
+import Reveal from '@/components/Reveal';
+import HoverCard from '@/components/HoverCard';
 
 async function getProjects(): Promise<PortfolioProject[]> {
   try {
@@ -16,21 +18,27 @@ export default async function PortfolioPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-20">
-      <div className="eyebrow mb-3">Completed work</div>
-      <h1 className="font-display text-4xl md:text-5xl mb-16">Portfolio</h1>
+      <Reveal>
+        <div className="eyebrow mb-3">Completed work</div>
+        <h1 className="font-display text-4xl md:text-5xl mb-16">Portfolio</h1>
+      </Reveal>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {projects.map((p) => (
-          <Link key={p.slug} href={`/portfolio/${p.slug}`} className="group block">
-            <div className="relative aspect-[4/3] bg-stoneDark dark:bg-white/5 overflow-hidden mb-4">
-              {p.cover_image_path && (
-                <Image src={imageUrl(p.cover_image_path)!} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-              )}
-            </div>
-            <div className="text-xs text-brass font-semibold uppercase tracking-wide mb-1">{p.category?.name}</div>
-            <div className="font-display text-lg group-hover:text-brass transition-colors">{p.title}</div>
-            {p.location && <div className="text-sm text-ink/50 dark:text-stone/60 mt-1">{p.location}</div>}
-          </Link>
+        {projects.map((p, i) => (
+          <Reveal key={p.slug} delay={(i % 6) * 0.08}>
+            <HoverCard>
+              <Link href={`/portfolio/${p.slug}`} className="group block">
+                <div className="relative aspect-[4/3] bg-stoneDark dark:bg-white/5 overflow-hidden mb-4">
+                  {p.cover_image_path && (
+                    <Image src={imageUrl(p.cover_image_path)!} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  )}
+                </div>
+                <div className="text-xs text-brass font-semibold uppercase tracking-wide mb-1">{p.category?.name}</div>
+                <div className="font-display text-lg group-hover:text-brass transition-colors">{p.title}</div>
+                {p.location && <div className="text-sm text-ink/50 dark:text-stone/60 mt-1">{p.location}</div>}
+              </Link>
+            </HoverCard>
+          </Reveal>
         ))}
         {projects.length === 0 && <p className="text-ink/50 dark:text-stone/60">No projects published yet.</p>}
       </div>

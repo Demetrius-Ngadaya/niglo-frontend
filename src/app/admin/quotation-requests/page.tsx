@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { adminFetch, adminToken, API_URL, imageUrl } from '@/lib/api';
+import { AdminBlockListSkeleton } from '@/components/AdminSkeleton';
 
 type QuoteItem = { description: string; quantity: number; unit_price: number; line_total?: number };
 
@@ -215,7 +216,7 @@ function QuotationRequestsContent() {
         </div>
 
         {error && <p className="text-red-700 text-sm mb-6">{error}</p>}
-        {loading && <p className="text-ink/50 dark:text-stone/60 text-sm">Loading…</p>}
+        {loading && <AdminBlockListSkeleton />}
 
         {!loading && items.length === 0 && (
           <p className="text-ink/50 dark:text-stone/60 text-sm">No quotation requests found.</p>

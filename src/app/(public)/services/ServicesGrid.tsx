@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { imageUrl, ServiceCategory, Service } from '@/lib/api';
 import ImageLightbox from '@/components/ImageLightbox';
+import Reveal from '@/components/Reveal';
+import HoverCard from '@/components/HoverCard';
 import { Images } from 'lucide-react';
 
 export default function ServicesGrid({ categories }: { categories: ServiceCategory[] }) {
@@ -21,47 +23,53 @@ export default function ServicesGrid({ categories }: { categories: ServiceCatego
       <div className="space-y-20">
         {categories.map((cat, i) => (
           <div key={cat.slug} id={cat.slug} className="scroll-mt-24">
-            <div className="flex items-baseline gap-4 mb-6">
-              <span className="text-sm font-mono text-brass">{String(i + 1).padStart(2, '0')}</span>
-              <h2 className="font-display text-2xl md:text-3xl">{cat.name}</h2>
-            </div>
-            {cat.description && <p className="text-ink/60 dark:text-stone/60 max-w-2xl mb-8">{cat.description}</p>}
+            <Reveal>
+              <div className="flex items-baseline gap-4 mb-6">
+                <span className="text-sm font-mono text-brass">{String(i + 1).padStart(2, '0')}</span>
+                <h2 className="font-display text-2xl md:text-3xl">{cat.name}</h2>
+              </div>
+              {cat.description && <p className="text-ink/60 dark:text-stone/60 max-w-2xl mb-8">{cat.description}</p>}
+            </Reveal>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(cat.services || []).map((svc) => {
+              {(cat.services || []).map((svc, j) => {
                 const gallery = galleryFor(svc);
                 const extraCount = (svc.images || []).length;
                 return (
-                  <div key={svc.slug} className="border border-ink/10 dark:border-stone/10 bg-white/40 dark:bg-white/5 p-6">
-                    {svc.image_path && (
-                      <button
-                        onClick={() => gallery.length > 0 && setLightbox({ service: svc, index: 0 })}
-                        className="relative aspect-video mb-4 bg-stoneDark dark:bg-white/5 w-full block group overflow-hidden"
-                      >
-                        <Image src={imageUrl(svc.image_path)!} alt={svc.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                        {extraCount > 0 && (
-                          <span className="absolute bottom-2 right-2 bg-ink/70 text-stone text-xs px-2 py-1 flex items-center gap-1">
-                            <Images size={12} /> {extraCount + 1}
-                          </span>
+                  <Reveal key={svc.slug} delay={(j % 3) * 0.08} y={16}>
+                    <HoverCard>
+                      <div className="border border-ink/10 dark:border-stone/10 bg-white/40 dark:bg-white/5 p-6 h-full">
+                        {svc.image_path && (
+                          <button
+                            onClick={() => gallery.length > 0 && setLightbox({ service: svc, index: 0 })}
+                            className="relative aspect-video mb-4 bg-stoneDark dark:bg-white/5 w-full block group overflow-hidden"
+                          >
+                            <Image src={imageUrl(svc.image_path)!} alt={svc.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                            {extraCount > 0 && (
+                              <span className="absolute bottom-2 right-2 bg-ink/70 text-stone text-xs px-2 py-1 flex items-center gap-1">
+                                <Images size={12} /> {extraCount + 1}
+                              </span>
+                            )}
+                          </button>
                         )}
-                      </button>
-                    )}
-                    <h3 className="font-display text-lg mb-2">{svc.name}</h3>
-                    {svc.short_description && (
-                      <p className="text-sm text-ink/60 dark:text-stone/60">{svc.short_description}</p>
-                    )}
-                    {svc.starting_price && (
-                      <div className="text-xs text-brass font-semibold mt-3">From {svc.starting_price}</div>
-                    )}
-                    {gallery.length > 1 && (
-                      <button
-                        onClick={() => setLightbox({ service: svc, index: 0 })}
-                        className="text-xs text-brass hover:underline mt-2 flex items-center gap-1"
-                      >
-                        <Images size={12} /> View all {gallery.length} photos
-                      </button>
-                    )}
-                  </div>
+                        <h3 className="font-display text-lg mb-2">{svc.name}</h3>
+                        {svc.short_description && (
+                          <p className="text-sm text-ink/60 dark:text-stone/60">{svc.short_description}</p>
+                        )}
+                        {svc.starting_price && (
+                          <div className="text-xs text-brass font-semibold mt-3">From {svc.starting_price}</div>
+                        )}
+                        {gallery.length > 1 && (
+                          <button
+                            onClick={() => setLightbox({ service: svc, index: 0 })}
+                            className="text-xs text-brass hover:underline mt-2 flex items-center gap-1"
+                          >
+                            <Images size={12} /> View all {gallery.length} photos
+                          </button>
+                        )}
+                      </div>
+                    </HoverCard>
+                  </Reveal>
                 );
               })}
               {(!cat.services || cat.services.length === 0) && (

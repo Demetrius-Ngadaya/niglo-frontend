@@ -1,5 +1,6 @@
 import { api } from '@/lib/api';
 import FaqAccordion from './FaqAccordion';
+import Reveal from '@/components/Reveal';
 
 type Faq = { id: number; question: string; answer: string };
 
@@ -17,8 +18,10 @@ export default async function FaqPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-20">
-      <div className="eyebrow mb-3">Got questions?</div>
-      <h1 className="font-display text-4xl md:text-5xl mb-16">Frequently Asked Questions</h1>
+      <Reveal>
+        <div className="eyebrow mb-3">Got questions?</div>
+        <h1 className="font-display text-4xl md:text-5xl mb-16">Frequently Asked Questions</h1>
+      </Reveal>
 
       {faqs.length > 0 ? (
         <FaqAccordion faqs={faqs} />

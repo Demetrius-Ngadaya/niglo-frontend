@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch, adminToken, imageUrl } from '@/lib/api';
+import { AdminCardGridSkeleton } from '@/components/AdminSkeleton';
 
 type AlbumImage = { id: number; image_path: string; caption?: string | null };
 
@@ -182,7 +183,7 @@ export default function AdminGalleryPage() {
         </div>
 
         {error && <p className="text-red-700 text-sm mb-6">{error}</p>}
-        {loading && <p className="text-ink/50 dark:text-stone/60 text-sm">Loading…</p>}
+        {loading && <AdminCardGridSkeleton />}
 
         {adding && (
           <div className="border border-brass/30 bg-brass/5 p-5 mb-8">
